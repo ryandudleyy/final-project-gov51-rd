@@ -13,11 +13,13 @@ library(readr)
 
 data <- readxl::read_xlsx("data/41304_2018_149_MOESM2_ESM (1).xlsx")
 
-
+# This was to make viewing the countries on the list easier. 
 
 y2000 <- data %>%
   filter(year == "2000")
 view(y2000)
+
+# This makes regression across the government types easier. 
 
 data <- data %>%
   mutate(parliamentarism = ifelse(regimenarrowcat == 0, 1, 0),
@@ -33,6 +35,8 @@ data <- data %>%
          otheroligarchy = ifelse(regimenarrowcat == 10, 1, 0),
          missing = ifelse(regimenarrowcat == 99, 1, 0))
 
+# This allows for an easier geographic perspective. 
+
 data <- data %>%
   mutate(asian = ifelse(
     ccode >= 630, 1, 0),
@@ -43,24 +47,101 @@ data <- data %>%
     american = ifelse(
       ccode >= 2 & ccode < 200, 1, 0))
 
+
+
+```
+
+```{r ussr}
+
 data_ussr <- data %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 17) %>%
   select(year_new, singleparty)
 
-swag <- lm(singleparty ~ year_new, data = data_ussr)
+lm_ussr <- lm(singleparty ~ year_new, data = data_ussr)
 
-summary(swag)$adj.r.squared
+summary(lm_ussr)$adj.r.squared
+
+data_ussr2 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 17, european == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr2 <- lm(singleparty ~ year_new, data = data_ussr2)
+
+summary(lm_ussr2)$adj.r.squared
+
+# First regression includes all countries, second only includes Europe. 
+
+data_ussr3 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50, european == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr3 <- lm(singleparty ~ year_new, data = data_ussr3)
+
+summary(lm_ussr3)$adj.r.squared
+
+# Third regression changes the baseline year. 
+
+data_ussr4 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75, european == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr4 <- lm(singleparty ~ year_new, data = data_ussr4)
+
+summary(lm_ussr4)$adj.r.squared
+
+data_ussr5 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 87, european == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr5 <- lm(singleparty ~ year_new, data = data_ussr5)
+
+summary(lm_ussr5)$adj.r.squared
+
+# The fourth and fifth regressions also change baseline year.
+
+# Interestingly, the correlation shifts significantly over time. 
+
+
+```
+
+```{r china}
 
 data_china <- data %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 49) %>%
   select(year_new, singleparty)
 
-swag2 <- lm(singleparty ~ year_new, data = data_china)
+lm_china <- lm(singleparty ~ year_new, data = data_china)
 
-summary(swag2)$adj.r.squared
+summary(lm_china)$adj.r.squared
+
+data_china2 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 49, asian == 1) %>%
+  select(year_new, singleparty)
+
+lm_china2 <- lm(singleparty ~ year_new, data = data_china2)
+
+summary(lm_china2)$adj.r.squared
+
+data_china3 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75, asian == 1) %>%
+  select(year_new, singleparty)
+
+lm_china3 <- lm(singleparty ~ year_new, data = data_china3)
+
+summary(lm_china3)$adj.r.squared
+
+
+``` 
 
 
 
-```
+
+
