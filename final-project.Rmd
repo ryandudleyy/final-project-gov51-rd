@@ -1,0 +1,66 @@
+---
+title: "final-project"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+```
+
+```{r data}
+
+data <- readxl::read_xlsx("data/41304_2018_149_MOESM2_ESM (1).xlsx")
+
+
+
+y2000 <- data %>%
+  filter(year == "2000")
+view(y2000)
+
+data <- data %>%
+  mutate(parliamentarism = ifelse(regimenarrowcat == 0, 1, 0),
+         semipresidentialism = ifelse(regimenarrowcat == 1, 1, 0),
+         presidentialism = ifelse(regimenarrowcat == 2, 1, 0),
+         semimonarchy = ifelse(regimenarrowcat == 3, 1, 0),
+         singleparty = ifelse(regimenarrowcat == 4, 1, 0),
+         multipartyauthoritarian = ifelse(regimenarrowcat == 5, 1, 0),
+         personalist = ifelse(regimenarrowcat == 6, 1, 0),
+         military = ifelse(regimenarrowcat == 7, 1, 0),
+         absolutemonarchy = ifelse(regimenarrowcat == 8, 1, 0),
+         monarchicoligarchy = ifelse(regimenarrowcat == 9, 1, 0),
+         otheroligarchy = ifelse(regimenarrowcat == 10, 1, 0),
+         missing = ifelse(regimenarrowcat == 99, 1, 0))
+
+data <- data %>%
+  mutate(asian = ifelse(
+    ccode >= 630, 1, 0),
+    african = ifelse(
+      ccode >= 402 & ccode < 630, 1, 0),
+    european = ifelse(
+      ccode >= 200 & ccode <= 395, 1, 0),
+    american = ifelse(
+      ccode >= 2 & ccode < 200, 1, 0))
+
+data_ussr <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 17) %>%
+  select(year_new, singleparty)
+
+swag <- lm(singleparty ~ year_new, data = data_ussr)
+
+summary(swag)$adj.r.squared
+
+data_china <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 49) %>%
+  select(year_new, singleparty)
+
+swag2 <- lm(singleparty ~ year_new, data = data_china)
+
+summary(swag2)$adj.r.squared
+
+
+
+```
