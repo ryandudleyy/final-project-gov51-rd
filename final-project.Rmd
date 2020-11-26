@@ -9,6 +9,13 @@ library(tidyverse)
 library(readr)
 ```
 
+# Proliferation of Regime Types Across Time
+
+Before I get into this, I just want to communicate that I do not know the actual parameters of this assignment, both for now and for the final project as a whole. I actually thought this was due today, not one week ago.
+
+The purpose of this project is to observe the changes in regime type prevalence relative to the strength of certain regimes, using a temporal and geographic lens in order to better understand the effect that major regime changes can have on surrounding regions. In order to understand this, the study is going to look at a number of cases over the course of the 20th century, with the Soviet Union and single party regimes being an example. The analysis will be conducted over the course of multiple year ranges and geographic locations; it will consist of a number of cases and analyses. 
+
+The data comes from a study published on March 14th, 2018 by Carsten Anckar and Cecilia Fredriksson in the Journal of European Political Science. It classifies political regimes from 1800 to 2016, using classifications which include a country's democratic/non-democratic status, a country's regime type (presidentialist, parliamentarian, personalist rule, etc.) and whether a country's head of state is popularly elected. The data in question is updated over the course of years, meaning that countries' regimes change over time during the dataset; consequently, the observed slopes are likely to be quite gentle. 
 ```{r data}
 
 data <- readxl::read_xlsx("data/41304_2018_149_MOESM2_ESM (1).xlsx")
@@ -87,6 +94,10 @@ summary(lm_ussr2)$adj.r.squared
 
 summary(lm_ussr2_sq)$adj.r.squared
 
+lm_ussr2_sq_values <- data_ussr2 %>% select(year_new, singleparty)
+lm_ussr2_sq_values$ussr2_sq_values <-
+  predict(lm_ussr2_sq, newdata = lm_ussr2_sq_values)
+
 # First regression includes all countries, second only includes Europe. 
 
 data_ussr3 <- data %>%
@@ -141,11 +152,56 @@ summary(lm_ussr5)$adj.r.squared
 
 # Interestingly, the correlation shifts significantly over time. 
 
-ggplot(data = data_ussr, mapping = aes(x = year_new, y = singleparty)) +
+```
+
+## The Case of the USSR
+
+(there will be more graphs in the final version)
+
+The below two graphs show two ways of interpreting the potential spread of single party regimes following the emergence of the Soviet Union in 1917. The independent variable is the year, while the dependent variable is the prevalence of single party regimes. The difference between the two graphs is what region they cover: the first graph includes all the world's countries, whereas the second graph limits the analysis to only Europe. All of the lines in these graphs were modified by a 30x multiplier to better reflect the data; it should be notified that this multiplier only exists to make the lines more visible and, though the numbers are proportional, the axes should not be considered when observing the lines. 
+
+The first graph depicts the distribution of single party regimes in the world over the course of the 20th century. The data begins in 1917, the year of the Russian Revolution. It is important to note that the prevalence of single party regimes does not change significantly following 1917, but rather following 1945. 
+
+The second graph depicts the distribution of single party regimes specifically in Europe over the 20th century. In this graph, there are two lines: a linear line and a quadratic line. The linear line's r-squared is 0.006696221, whereas the r-squared the quadratic line is 0.08567992, meaning the quadratic line better fits the data. The quadratic model reflects the rise and fall of the single party regime type over the course of the 20th century, as the USSR gained prevalence and fell over the course of 80 years. 
+
+```{r ussrgeom}
+
+ussr_geom <- ggplot(data = data_ussr, mapping = 
+                      aes(x = year_new, y = singleparty)) +
   geom_col(aes(y = singleparty)) +
-  geom_abline(intercept = .1431769 * 30, slope = -0.0006335 * 30)
+  geom_abline(intercept = .1431769 * 30, slope = -0.0006335 * 30) +
+  ylim(0, 40) + 
+  xlim(15, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in the 20th century",
+       x = "Years since 1900",
+       y = "Single Party Regimes")
+
+# Both of these lines have been modified by a flat 30x multiplier
+# in order to better compare the graphs with the data set
+# this multiplier is arbitrary
+
+ussr2_geom <- ggplot(data = data_ussr2, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_line(aes(y = 30*lm_ussr2_sq_values$ussr2_sq_values), color = "red") +
+  geom_abline(intercept = .1859563 * 30, slope = - 0.0009342* 30,
+              color = "blue") +
+  ylim(0, 10) + 
+  xlim(15, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in 20th century Europe",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe")
+
+ussr_geom
+ussr2_geom
+
+
 
 ```
+
+## The Case of China
 
 ```{r china}
 
