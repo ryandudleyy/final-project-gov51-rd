@@ -3,7 +3,7 @@ title: "final-project"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE, message=FALSE}
+```{r setup, include=FALSE, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readr)
@@ -16,7 +16,7 @@ Before I get into this, I just want to communicate that I do not know the actual
 The purpose of this project is to observe the changes in regime type prevalence relative to the strength of certain regimes, using a temporal and geographic lens in order to better understand the effect that major regime changes can have on surrounding regions. In order to understand this, the study is going to look at a number of cases over the course of the 20th century, with the Soviet Union and single party regimes being an example. The analysis will be conducted over the course of multiple year ranges and geographic locations; it will consist of a number of cases and analyses. 
 
 The data comes from a study published on March 14th, 2018 by Carsten Anckar and Cecilia Fredriksson in the Journal of European Political Science. It classifies political regimes from 1800 to 2016, using classifications which include a country's democratic/non-democratic status, a country's regime type (presidentialist, parliamentarian, personalist rule, etc.) and whether a country's head of state is popularly elected. The data in question is updated over the course of years, meaning that countries' regimes change over time during the dataset; consequently, the observed slopes are likely to be quite gentle. 
-```{r data}
+```{r data, echo = FALSE}
 
 data <- readxl::read_xlsx("data/41304_2018_149_MOESM2_ESM (1).xlsx")
 
@@ -58,7 +58,7 @@ data <- data %>%
 
 ```
 
-```{r ussr}
+```{r ussr, echo = FALSE}
 
 data_ussr <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -164,7 +164,7 @@ The first graph depicts the distribution of single party regimes in the world ov
 
 The second graph depicts the distribution of single party regimes specifically in Europe over the 20th century. In this graph, there are two lines: a linear line and a quadratic line. The linear line's r-squared is 0.006696221, whereas the r-squared the quadratic line is 0.08567992, meaning the quadratic line better fits the data. The quadratic model reflects the rise and fall of the single party regime type over the course of the 20th century, as the USSR gained prevalence and fell over the course of 80 years. 
 
-```{r ussrgeom}
+```{r ussrgeom, echo = FALSE}
 
 ussr_geom <- ggplot(data = data_ussr, mapping = 
                       aes(x = year_new, y = singleparty)) +
@@ -203,7 +203,7 @@ ussr2_geom
 
 ## The Case of China
 
-```{r china}
+```{r china, echo = FALSE}
 
 data_china <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -235,7 +235,11 @@ summary(lm_china3)$adj.r.squared
 
 ``` 
 
+## Code
 
+```{r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+## This command will print all of your named chunks
+```
 
 
 
