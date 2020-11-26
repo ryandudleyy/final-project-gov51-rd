@@ -62,6 +62,17 @@ lm_ussr <- lm(singleparty ~ year_new, data = data_ussr)
 
 summary(lm_ussr)$adj.r.squared
 
+data_ussr_alt <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50) %>%
+  select(year_new, singleparty)
+
+lm_ussr_alt <- lm(singleparty ~ year_new, data = data_ussr_alt)
+
+summary(lm_ussr_alt)$adj.r.squared
+
+# The alt was designed to better compare with ussr2
+
 data_ussr2 <- data %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 17, european == 1) %>%
@@ -69,7 +80,12 @@ data_ussr2 <- data %>%
 
 lm_ussr2 <- lm(singleparty ~ year_new, data = data_ussr2)
 
+lm_ussr2_sq <- lm(singleparty ~ year_new +
+                    I(year_new^2), data = data_ussr2)
+
 summary(lm_ussr2)$adj.r.squared
+
+summary(lm_ussr2_sq)$adj.r.squared
 
 # First regression includes all countries, second only includes Europe. 
 
@@ -80,7 +96,26 @@ data_ussr3 <- data %>%
 
 lm_ussr3 <- lm(singleparty ~ year_new, data = data_ussr3)
 
+lm_ussr3_sq <- lm(singleparty ~ year_new +
+                    I(year_new^2), data = data_ussr3)
+
 summary(lm_ussr3)$adj.r.squared
+
+summary(lm_ussr3_sq)$adj.r.squared
+
+data_ussr3_alt <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50, european == 1 | asian == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr3_alt <- lm(singleparty ~ year_new, data = data_ussr3_alt)
+
+lm_ussr3_alt_sq <- lm(singleparty ~ year_new +
+                    I(year_new^2), data = data_ussr3_alt)
+
+summary(lm_ussr3_alt)$adj.r.squared
+
+summary(lm_ussr3_alt_sq)$adj.r.squared
 
 # Third regression changes the baseline year. 
 
@@ -106,6 +141,9 @@ summary(lm_ussr5)$adj.r.squared
 
 # Interestingly, the correlation shifts significantly over time. 
 
+ggplot(data = data_ussr, mapping = aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_abline(intercept = .1431769 * 30, slope = -0.0006335 * 30)
 
 ```
 
