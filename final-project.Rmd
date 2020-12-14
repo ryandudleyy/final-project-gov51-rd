@@ -1,5 +1,5 @@
 ---
-title: "final-project"
+title: "The Demonstration Effect"
 output: pdf_document
 ---
 
@@ -12,11 +12,13 @@ library(knitr)
 
 # Proliferation of Regime Types Across Time
 
-Before I get into this, I just want to communicate that I do not know the actual parameters of this assignment, both for now and for the final project as a whole. I actually thought this was due today, not one week ago.
+  US politicians argued that American intervention in the second world war was necessary to stop the spread of fascism. Those same politicians made the same argument in regard to communism, in what would come to be known as Domino Theory. Modern political scientists followed a similar logic in exploring what was known as the Third Wave of Democratization, which occurred in the last quarter of the 20th century. All of these depend on a common principle: what occurs elsewhere will occur nearby. Political scientists call this "the demonstration effect." 
+  
+  To what extent is this phenomenon real? Where can we observe it in history? How powerful is the demonstration effect? And what implications do its existence bring? 
 
-The purpose of this project is to observe the changes in regime type prevalence relative to the strength of certain regimes, using a temporal and geographic lens in order to better understand the effect that major regime changes can have on surrounding regions. In order to understand this, the study is going to look at a number of cases over the course of the 20th century, with the Soviet Union and single party regimes being an example. The analysis will be conducted over the course of multiple year ranges and geographic locations; it will consist of a number of cases and analyses. 
-
-The data comes from a study published on March 14th, 2018 by Carsten Anckar and Cecilia Fredriksson in the Journal of European Political Science. It classifies political regimes from 1800 to 2016, using classifications which include a country's democratic/non-democratic status, a country's regime type (presidentialist, parliamentarian, personalist rule, etc.) and whether a country's head of state is popularly elected. The data in question is updated over the course of years, meaning that countries' regimes change over time during the dataset; consequently, the observed slopes are likely to be quite gentle. 
+  The purpose of this project is to explore the demonstration effect throughout the 20th century, using a temporal method and a series of linear regressions in order to determine the strength of the demonstration effect. Toward this end, we will be examining two cases: that of the USSR and that of Spain and Portugal, and observe the changes in their corresponding regime types in the relevant time periods. For the USSR, the time period in question is from 1917 to 1991, and the regime type in question is single party regimes, with a geographic focus on Europe and some observations in Asia. For Spain and Portugal, the time period will begin in 1975, and will span until the year 2000, with the regime type in question being democracy, and the particular regions being Europe and Latin America. 
+  
+  The data comes from a study published on March 14th, 2018 by Carsten Anckar and Cecilia Fredriksson in the Journal of European Political Science. It classifies political regimes from 1800 to 2016, using classifications which include a country's democratic/non-democratic status, a country's regime type (presidentialist, parliamentarian, personalist rule, etc.) and whether a country's head of state is popularly elected. The data in question is updated over the course of years, meaning that countries' regimes change over time during the data set; consequently, the observed slopes are likely to be quite gentle. 
 
 \newpage
 
@@ -58,7 +60,10 @@ data <- data %>%
     american = ifelse(
       ccode >= 2 & ccode < 200, 1, 0))
 
+data_democracy <- data %>%
+  filter(democracy != 99 & democracy != "NA")
 
+# This makes performing linear regressions on democracy possible
 
 ```
 
@@ -282,17 +287,17 @@ data_ussr_regime_change1950_3 <-
 
 ```
 
-## The Case of the USSR
+## The Soviet Union and Single Party Regimes
 
-(there will be more graphs in the final version)
+  The Soviet Union initially emerged in 1917 following the Russian Revolution, but would not effectively coalesce until after the Russian Civil War. The Soviet Union would come to adopt a single party regime, in which one party, the Communist Party, would hold control over the government. Over the course of the 1930s, the Soviet Union industrialized, which enabled the country to emerge from World War Two as a superpower. Winston Churchill, leader of the United Kingdom during WWII, referred to the Soviet sphere of influence as an "iron curtain," in which all the enclosed countries would become communist. To what extent was Churchill's assessment of the spread of single party regimes in Europe fair? 
 
-The below two graphs show two ways of interpreting the potential spread of single party regimes following the emergence of the Soviet Union in 1917. The independent variable is the year, while the dependent variable is the prevalence of single party regimes. The difference between the two graphs is what region they cover: the first graph includes all the world's countries, whereas the second graph limits the analysis to only Europe. All of the lines in these graphs were modified by a 30x multiplier to better reflect the data; it should be notified that this multiplier only exists to make the lines more visible and, though the numbers are proportional, the axes should not be considered when observing the lines. 
+  The below two graphs show two ways of interpreting the potential spread of single party regimes following the emergence of the Soviet Union in 1917. The independent variable is the year, while the dependent variable is the prevalence of single party regimes. The difference between the two graphs is what region they cover: the first graph includes all the world's countries, whereas the second graph limits the analysis to only Europe. All of the lines in these graphs were modified by a 30x multiplier to better reflect the data; it should be notified that this multiplier only exists to make the lines more visible and, though the numbers are proportional, the axes should not be considered when observing the lines. 
 
-The first graph depicts the distribution of single party regimes in the world over the course of the 20th century. The data begins in 1917, the year of the Russian Revolution. It is important to note that the prevalence of single party regimes does not change significantly following 1917, but rather following 1945. 
+  The first graph depicts the distribution of single party regimes in the world over the course of the 20th century. The data begins in 1917, the year of the Russian Revolution. It is important to note that the prevalence of single party regimes does not change significantly following 1917, but rather following 1945. 
 
-The second graph depicts the distribution of single party regimes specifically in Europe over the 20th century. In this graph, there are two lines: a linear line and a quadratic line. The linear line's r-squared is 0.006696221, whereas the r-squared the quadratic line is 0.08567992, meaning the quadratic line better fits the data. The quadratic model reflects the rise and fall of the single party regime type over the course of the 20th century, as the USSR gained prevalence and fell over the course of 80 years.
+  The second graph depicts the distribution of single party regimes specifically in Europe over the 20th century. In this graph, there are two lines: a linear line and a quadratic line. The linear line's r-squared is 0.006696221, whereas the r-squared the quadratic line is 0.08567992, meaning the quadratic line better fits the data. The quadratic model reflects the rise and fall of the single party regime type over the course of the 20th century, as the USSR gained prevalence and fell over the course of 80 years.
 
-A simple view at these graphs and at their correlations will communicate that this comparison is not strong. The linear models for both graphs do not reflect the drastic changes in the population of single party regimes around the years 1950 and 1991, and even the quadratic model featured in the European graph only slightly reflects this. Consequently, while the years since 1917 has some predictive power on the prevalence of single party regimes both in the world and particularly in Europe, our analysis can be improved.
+  A simple view at these graphs and at their correlations will communicate that this comparison is not strong. The linear models for both graphs do not reflect the drastic changes in the population of single party regimes around the years 1950 and 1991, and even the quadratic model featured in the European graph only slightly reflects this. Consequently, while the years since 1917 has some predictive power on the prevalence of single party regimes both in the world and particularly in Europe, our analysis can be improved.
 
 ```{r ussrgeom, echo = FALSE}
 
@@ -350,6 +355,8 @@ ussr2_geom
     Moving onto the last three graphs which cover the years since 1975 in Europe, the years since 1987 in Europe, and the years in 1987 in Europe and Asia, there is some sign of stronger measure. The fourth graph follows a similar pattern to the second graph; however, its r-squared value is slightly higher than the second graph at 0.1286. Interestingly, this graph's steeper, downward trend suggests an potential unraveling of the demonstration effect, where the Soviet Union's failure to maintain its coercive control over the various European states result in the collapse of the single party system in Europe as a whole. 
     
   The fifth and sixth graphs are much less interesting than the previous four. The fifth graph consists of only three years, those after 1987, and shows the drop that occurred in the late 1980s from a much closer perspective. Due to the limited sample size afforded to the last graph, the line of best fit does not capture the pattern here particularly well, with an r-squared value of just 0.0615. The sixth graph does not fare much better, with an r-squared of 0.0156. The graph starts slightly higher than the fifth one and retains approximately 3 single party regimes following 1991, which would account for those regimes in Asia; the decreased predictive power of the model once again suggests the role of geography in the demonstration effect. 
+  
+  It should be noted that the data set is also limiting in certain ways particularly in regard to the possibility of performing a t-test and other tests of significance. Based on the analysis in the above paragraphs, it becomes relatively clear that not all of these curves are adequate measures of the demonstration effect. In particular, the fifth graph on the previous page is very lackluster at communicating any relationship between the variables in question; however, if one attempts to analyze the p-value for this particular graph, they will find that it is 2.2e-16 with a t-value of -9.417, far beyond the realm of statistical significance. The p-value is in this same range for all of the other graphs, suggesting its inadequacy as a measure for these graphs. As such, there will be no tests of significance of this variety in this report, as they do not communicate any useful information. The r-squared value is a much better measure of the relationship between the demonstration effect and the prevalence of certain regime types than is the p-value in this scenario. 
 ```{r ussr2, echo = FALSE}
 
 ussralt_geom <- ggplot(data = data_ussr_alt, mapping = 
@@ -433,6 +440,8 @@ ussr5alt_geom
 
 \newpage
 
+### Regime Change Tables
+
   Another way to measure the demonstration effect is to look at regime changes that have occurred within a given time frame, and examine how that may be related to a certain event. Unfortunately, the data available to this analysis makes performing this in the form of a linear regression over impracticable but, given that this information could still potentially be valuable, it shall be included as an addendum to the USSR section in the form of two tables. The two tables show a given European country in the left column and whether it changed from and to a single party regime between the set years. It should be noted that these tables measure whether the regime changed to or from being a single party regime in 1950 relative to 1917, and thus does not account for variation in between those years. This means that, if a single party regime were to emerge in 1924 and collapse in 1945, that  would not be accounted for by these tables; these tables also do not include certain European countries, as there was not data for them in the years covered. 
 
 ```{r ussr_regime_change, echo = FALSE}
@@ -474,9 +483,13 @@ knitr::kable(data_ussr_regime_change1950_3, col.names =
 
 ```
 
-## The Case of China
+```{r china, echo = FALSE, include = FALSE}
 
-```{r china, echo = FALSE}
+# This code was part of a section I wanted to do on China
+# to better explore the geographic component of the demonstration effect.
+# The data, however, was not particularly interesting,
+# so I decided against including it in the final report.
+# Here is my work, however, if you wish to look at it. 
 
 data_china <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -485,7 +498,7 @@ data_china <- data %>%
 
 lm_china <- lm(singleparty ~ year_new, data = data_china)
 
-summary(lm_china)$adj.r.squared
+# summary(lm_china)$adj.r.squared
 
 data_china2 <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -494,7 +507,7 @@ data_china2 <- data %>%
 
 lm_china2 <- lm(singleparty ~ year_new, data = data_china2)
 
-summary(lm_china2)$adj.r.squared
+# summary(lm_china2)$adj.r.squared
 
 data_china3 <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -503,10 +516,183 @@ data_china3 <- data %>%
 
 lm_china3 <- lm(singleparty ~ year_new, data = data_china3)
 
-summary(lm_china3)$adj.r.squared
+# summary(lm_china3)$adj.r.squared
 
 
 ``` 
+
+\newpage
+
+## The Third Wave of Democratization
+```{r thirdwave, echo = FALSE}
+
+# Democracy in the 20th century 
+
+data_democracy_20th_century <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 0) %>%
+  select(year_new, democracy)
+
+lm_democracy_20th_century <- 
+  lm(democracy ~ year_new, data = data_democracy_20th_century)
+
+summary(lm_democracy_20th_century)$adj.r.squared
+
+# Democracy in the second half of the 20th century
+
+data_second_half_20 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50) %>%
+  select(year_new, democracy)
+
+lm_second_half_20 <- 
+  lm(democracy ~ year_new, data = data_second_half_20)
+
+summary(lm_second_half_20)$adj.r.squared
+
+
+# 75 wave with all countries
+
+data_wave <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75) %>%
+  select(year_new, democracy)
+
+lm_wave <- lm(democracy ~ year_new, data = data_wave)
+
+summary(lm_wave)$adj.r.squared
+
+# 75 wave just in Europe
+
+data_wave_europe <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75, european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_europe <- lm(democracy ~ year_new, data = data_wave_europe)
+
+summary(lm_wave_europe)$adj.r.squared
+
+# 75 wave in just Americas
+
+data_wave_america <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75,american == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_america <- lm(democracy ~ year_new, data = data_wave_america)
+
+summary(lm_wave_america)$adj.r.squared
+
+# 75 wave in Europe and Americas
+
+data_wave_eula <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 75,american == 1 | european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_eula <- lm(democracy ~ year_new, data = data_wave_eula)
+
+summary(lm_wave_eula)$adj.r.squared
+
+# 85 start, the world
+
+data_wave_85 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 85) %>%
+  select(year_new, democracy)
+
+lm_wave_85 <- lm(democracy ~ year_new, data = data_wave_85)
+
+summary(lm_wave_85)$adj.r.squared
+
+# 85 start, Europe
+
+data_wave_europe_85 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 85, european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_europe_85 <- lm(democracy ~ year_new, data = data_wave_europe_85)
+
+summary(lm_wave_europe_85)$adj.r.squared
+
+# 85 start, Americas
+
+data_wave_america_85 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 85,american == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_america_85 <- lm(democracy ~ year_new, data = data_wave_america_85)
+
+summary(lm_wave_america_85)$adj.r.squared
+
+# 85 start, Americas and Europe
+
+data_wave_eula_85 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 85,american == 1 | european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_eula_85 <- lm(democracy ~ year_new, data = data_wave_eula_85)
+
+summary(lm_wave_eula_85)$adj.r.squared
+
+# 91 start, the world
+
+data_wave_91 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 91) %>%
+  select(year_new, democracy)
+
+lm_wave_91 <- lm(democracy ~ year_new, data = data_wave_91)
+
+summary(lm_wave_91)$adj.r.squared
+
+# 91 start, Europe
+
+data_wave_europe_91 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 91, european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_europe_91 <- lm(democracy ~ year_new, data = data_wave_europe_91)
+
+summary(lm_wave_europe_91)$adj.r.squared
+
+# 91 start, Americas
+
+data_wave_america_91 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 91,american == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_america_91 <- lm(democracy ~ year_new, data = data_wave_america_91)
+
+summary(lm_wave_america_91)$adj.r.squared
+
+# 91 start, Americas and Europe
+
+data_wave_eula_91 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 91,american == 1 | european == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_eula_91 <- lm(democracy ~ year_new, data = data_wave_eula_91)
+
+summary(lm_wave_eula_91)$adj.r.squared
+
+```
+
+  In 1975, a series of events would be set in motion to change the state of democracy in the world. Following Portuguese democratization and the death of Spanish dictator Franco, the Iberian peninsula would become democratic. Over the course of the next two decades, a number of other countries around the world would democratize, particularly those in Europe and Latin America. Political scientists have termed the spread of democracy in this era "the demonstration effect." To what extent is the spread of democracy in the Third Wave attributable to the demonstration effect?
+  
+```{r thirdwave_geom, echo = FALSE}
+
+
+
+```
+
 
 ## Code
 
