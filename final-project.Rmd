@@ -30,7 +30,6 @@ data <- readxl::read_xlsx("data/41304_2018_149_MOESM2_ESM (1).xlsx")
 
 y2000 <- data %>%
   filter(year == "2000")
-view(y2000)
 
 # This makes regression across the government types easier. 
 
@@ -306,7 +305,7 @@ ussr_geom <- ggplot(data = data_ussr, mapping =
   geom_col(aes(y = singleparty)) +
   geom_abline(intercept = .1431769 * 30, slope = -0.0006335 * 30) +
   ylim(0, 40) + 
-  xlim(15, 100) + 
+  xlim(15, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in the 20th century",
        x = "Years since 1900",
@@ -366,7 +365,7 @@ ussralt_geom <- ggplot(data = data_ussr_alt, mapping =
             color = "red") +
   geom_abline(intercept = .37460 * 100, slope = -0.00312 * 100) +
   ylim(0, 40) + 
-  xlim(50, 100) + 
+  xlim(50, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in the mid-20th century",
        x = "Years since 1900",
@@ -378,7 +377,7 @@ ussr3_geom <- ggplot(data = data_ussr3, mapping =
   geom_line(aes(y = 30*lm_ussr3_sq_values$ussr3_sq_values), color = "red") +
   geom_abline(intercept = .642678 * 30, slope = -0.005878 * 30) +
   ylim(0, 10) + 
-  xlim(50, 100) + 
+  xlim(50, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in mid-20th century Europe",
        x = "Years since 1900",
@@ -390,7 +389,7 @@ ussr3alt_geom <- ggplot(data = data_ussr3_alt, mapping =
   geom_line(aes(y = 30*lm_ussr3_alt_sq_values$ussr3_alt_sq_values), color = "red") +
   geom_abline(intercept = .642678 * 30, slope = -0.005878 * 30) +
   ylim(0, 20) + 
-  xlim(50, 100) + 
+  xlim(50, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in mid-20th century Europe and Asia",
        x = "Years since 1900",
@@ -401,7 +400,7 @@ ussr4_geom <- ggplot(data = data_ussr4, mapping =
   geom_col(aes(y = singleparty)) +
   geom_abline(intercept = .870932 * 30, slope = -0.008172 * 30) +
   ylim(0, 10) + 
-  xlim(75, 100) + 
+  xlim(75, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in Mid-Late 20th Century Europe",
        x = "Years since 1900",
@@ -423,7 +422,7 @@ ussr5alt_geom <- ggplot(data = data_ussr5_alt, mapping =
   geom_col(aes(y = singleparty)) +
   geom_abline(intercept = .291841 * 30, slope = -0.002451 * 30) +
   ylim(0, 20) + 
-  xlim(87, 100) + 
+  xlim(87, 101) + 
   theme_bw() +
   labs(title = "Single Party Regimes in Late 20th Century Europe and Asia",
        x = "Years since 1900",
@@ -528,15 +527,15 @@ lm_china3 <- lm(singleparty ~ year_new, data = data_china3)
 
 # Democracy in the 20th century 
 
-data_democracy_20th_century <- data_democracy %>%
+data_full20 <- data_democracy %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 0) %>%
   select(year_new, democracy)
 
-lm_democracy_20th_century <- 
-  lm(democracy ~ year_new, data = data_democracy_20th_century)
+lm_data_full20 <- 
+  lm(democracy ~ year_new, data = data_full20)
 
-summary(lm_democracy_20th_century)$adj.r.squared
+summary(lm_data_full20)$adj.r.squared
 
 # Democracy in the second half of the 20th century
 
@@ -549,7 +548,6 @@ lm_second_half_20 <-
   lm(democracy ~ year_new, data = data_second_half_20)
 
 summary(lm_second_half_20)$adj.r.squared
-
 
 # 75 wave with all countries
 
@@ -683,16 +681,246 @@ lm_wave_eula_91 <- lm(democracy ~ year_new, data = data_wave_eula_91)
 
 summary(lm_wave_eula_91)$adj.r.squared
 
+# 1950 Americas
+
+data_wave_america_50 <- data_democracy %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50, american == 1) %>%
+  select(year_new, democracy)
+
+lm_wave_america_50 <- lm(democracy ~ year_new, data = data_wave_america_50)
+
+summary(lm_wave_america_50)$adj.r.squared
+
 ```
 
   In 1975, a series of events would be set in motion to change the state of democracy in the world. Following Portuguese democratization and the death of Spanish dictator Franco, the Iberian peninsula would become democratic. Over the course of the next two decades, a number of other countries around the world would democratize, particularly those in Europe and Latin America. Political scientists have termed the spread of democracy in this era "the demonstration effect." To what extent is the spread of democracy in the Third Wave attributable to the demonstration effect?
   
-```{r thirdwave_geom, echo = FALSE}
+```{r thirdwave_world, echo = FALSE}
 
+# Full century graph
+
+data_full20_geom <- ggplot(data = data_full20, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .206197 * 150, slope = 0.003042 * 150) +
+  ylim(0, 125) + 
+  xlim(0, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies, 20th century",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+# Post 1950 graph
+
+data_second_half_20_geom <- ggplot(data = data_second_half_20, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -0.026878 * 150, slope = 0.005564 * 150) +
+  ylim(0, 125) + 
+  xlim(50, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies, 1950 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+# 75 wave
+
+data_wave_geom <- ggplot(data = data_wave, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -0.342910 * 150, slope = 0.008764 * 150) +
+  ylim(0, 125) + 
+  xlim(75, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies, 1975 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+# 85 start
+
+data_wave_85_geom <- ggplot(data = data_wave_85, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -0.174975 * 150, slope = 0.007166 * 150) +
+  ylim(0, 125) + 
+  xlim(85, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies, 1985 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+# 91 start
+
+data_wave_91_geom <- ggplot(data = data_wave_91, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = 0.095449 * 150, slope = 0.004646 * 150) +
+  ylim(0, 125) + 
+  xlim(91, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies, 1991 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+
+data_full20_geom
+data_second_half_20_geom
+data_wave_geom
+data_wave_85_geom
+data_wave_91_geom
+
+```
+
+```{r thirdwave_europe, echo = FALSE}
+
+data_wave_europe_geom <- ggplot(data = data_wave_europe, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .174603 * 40, slope = 0.006582 * 40) +
+  ylim(0, 40) + 
+  xlim(75, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe, 1975 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in Europe")
+
+data_wave_europe_85_geom <- ggplot(data = data_wave_europe_85, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .330539 * 40, slope = 0.005104 * 40) +
+  ylim(0, 40) + 
+  xlim(85, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe, 1985 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in Europe")
+
+data_wave_europe_91_geom <- ggplot(data = data_wave_europe_91, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .635109 * 40, slope = 0.002264 * 40) +
+  ylim(0, 40) + 
+  xlim(91, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe, 1991 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in Europe")
+
+data_wave_europe_geom
+data_wave_europe_85_geom
+data_wave_europe_91_geom
+```
+
+```{r thirdwave_americas, echo = FALSE}
+
+data_wave_america_50_geom <- ggplot(data = data_wave_america_50, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -.103435 * 30, slope = 0.009236 * 30) +
+  ylim(0, 30) + 
+  xlim(50, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in the Americas, 1950 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in the Americas")
+
+data_wave_america_geom <- ggplot(data = data_wave_america, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -.31029 * 30, slope = 0.01135 * 30) +
+  ylim(0, 30) + 
+  xlim(75, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in the Americas, 1975 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in the Americas")
+
+data_wave_america_85_geom <- ggplot(data = data_wave_america_85, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .252558 * 30, slope = 0.005968 * 30) +
+  ylim(0, 30) + 
+  xlim(85, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in the Americas, 1985 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in the Americas")
+
+data_wave_america_91_geom <- ggplot(data = data_wave_america_91, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = .4 * 30, slope = 0.004593 * 30) +
+  ylim(0, 30) + 
+  xlim(91, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in the Americas, 1991 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies in the Americas")
+
+data_wave_america_50_geom
+data_wave_america_geom
+data_wave_america_85_geom
+data_wave_america_91_geom
 
 
 ```
 
+```{r thirdwave_eula, echo = FALSE}
+
+data_wave_eula_geom <- ggplot(data = data_wave_eula, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = -.05734 * 70, slope = 0.00885 * 70) +
+  ylim(0, 70) + 
+  xlim(75, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe and America, 1975 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+data_wave_eula_85_geom <- ggplot(data = data_wave_eula_85, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = 0.296809 * 70, slope = 0.005477 * 70) +
+  ylim(0, 70) + 
+  xlim(85, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe and America, 1985 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+data_wave_eula_91_geom <- ggplot(data = data_wave_eula_91, mapping = 
+                      aes(x = year_new, y = democracy)) +
+  geom_col(aes(y = democracy)) +
+  geom_abline(intercept = 0.533688 * 70, slope = 0.003268 * 70) +
+  ylim(0, 70) + 
+  xlim(91, 101) + 
+  theme_bw() +
+  labs(title = 
+         "Prevalence of Democracies in Europe and America, 1991 - 2000",
+       x = "Years since 1900",
+       y = "Number of Democracies")
+
+data_wave_eula_geom
+data_wave_eula_85_geom
+data_wave_eula_91_geom
+
+```
 
 ## Code
 
