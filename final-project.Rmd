@@ -7,6 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readr)
+library(knitr)
 ```
 
 # Proliferation of Regime Types Across Time
@@ -63,6 +64,8 @@ data <- data %>%
 
 ```{r ussr, echo = FALSE}
 
+#data_ussr
+
 data_ussr <- data %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 17) %>%
@@ -71,6 +74,8 @@ data_ussr <- data %>%
 lm_ussr <- lm(singleparty ~ year_new, data = data_ussr)
 
 summary(lm_ussr)$adj.r.squared
+
+#data_ussr_alt
 
 data_ussr_alt <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -82,6 +87,8 @@ lm_ussr_alt <- lm(singleparty ~ year_new, data = data_ussr_alt)
 summary(lm_ussr_alt)$adj.r.squared
 
 # The alt was designed to better compare with ussr2
+
+#data_ussr2
 
 data_ussr2 <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -103,6 +110,8 @@ lm_ussr2_sq_values$ussr2_sq_values <-
 
 # First regression includes all countries, second only includes Europe. 
 
+#data_ussr3
+
 data_ussr3 <- data %>%
   mutate(year_new = year - 1900) %>%
   filter(year_new > 50, european == 1) %>%
@@ -116,6 +125,12 @@ lm_ussr3_sq <- lm(singleparty ~ year_new +
 summary(lm_ussr3)$adj.r.squared
 
 summary(lm_ussr3_sq)$adj.r.squared
+
+lm_ussr3_sq_values <- data_ussr3 %>% select(year_new, singleparty)
+lm_ussr3_sq_values$ussr3_sq_values <-
+  predict(lm_ussr3_sq, newdata = lm_ussr3_sq_values)
+
+#data_ussr3_alt
 
 data_ussr3_alt <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -131,7 +146,13 @@ summary(lm_ussr3_alt)$adj.r.squared
 
 summary(lm_ussr3_alt_sq)$adj.r.squared
 
+lm_ussr3_alt_sq_values <- data_ussr3_alt %>% select(year_new, singleparty)
+lm_ussr3_alt_sq_values$ussr3_alt_sq_values <-
+  predict(lm_ussr3_alt_sq, newdata = lm_ussr3_alt_sq_values)
+
 # Third regression changes the baseline year. 
+
+#data_ussr4
 
 data_ussr4 <- data %>%
   mutate(year_new = year - 1900) %>%
@@ -142,18 +163,113 @@ lm_ussr4 <- lm(singleparty ~ year_new, data = data_ussr4)
 
 summary(lm_ussr4)$adj.r.squared
 
+#data_ussr5
+
 data_ussr5 <- data %>%
   mutate(year_new = year - 1900) %>%
-  filter(year_new > 87, european == 1) %>%
+  filter(year_new >= 87, european == 1) %>%
   select(year_new, singleparty)
 
 lm_ussr5 <- lm(singleparty ~ year_new, data = data_ussr5)
 
 summary(lm_ussr5)$adj.r.squared
 
+#data_ussr5_alt
+
+data_ussr5_alt <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new >= 87, european == 1 | asian == 1) %>%
+  select(year_new, singleparty)
+
+lm_ussr5_alt <- lm(singleparty ~ year_new, data = data_ussr5_alt)
+
+summary(lm_ussr5_alt)$adj.r.squared
+
 # The fourth and fifth regressions also change baseline year.
 
 # Interestingly, the correlation shifts significantly over time. 
+
+# Regime change 1917 - 1950
+
+data_ussr2_test <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 17, european == 1) %>%
+  select(year_new, singleparty) %>%
+  mutate(regime_type1917 = singleparty)
+
+data_ussr3_test <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 50, european == 1) %>%
+  select(year_new, singleparty) %>%
+  mutate(regime_type1950 = singleparty)
+
+data_ussr_regime_change1950 <- full_join(data_ussr2_test, data_ussr3_test, by = "year_new") %>%
+  na.omit() %>%
+  mutate(regime_change = ifelse(regime_type1917 != regime_type1950,
+                                1, 0))
+lm_ussr_regime_change1950 <- lm(regime_change ~ year_new,
+  data = data_ussr_regime_change1950)
+
+summary(lm_ussr_regime_change1950)$adj.r.squared
+
+# Regime change 1950 - 1987
+
+data_ussr4_test <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new > 87, european == 1) %>%
+  select(year_new, singleparty) %>%
+  mutate(regime_type1987 = singleparty)
+
+data_ussr_regime_change1987 <- full_join(data_ussr3_test, data_ussr4_test, by = "year_new") %>%
+  na.omit() %>%
+  mutate(regime_change = ifelse(regime_type1950 != regime_type1987,
+                                1, 0))
+lm_ussr_regime_change1987 <- lm(regime_change ~ year_new,
+  data = data_ussr_regime_change1987)
+
+summary(lm_ussr_regime_change1987)$adj.r.squared
+
+# New Idea for Regime Change Graph
+
+data_ussr2_test_2 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new == 17, european == 1) %>%
+  select(year_new, singleparty, country) %>%
+  mutate(regime_type1917 = singleparty)
+
+data_ussr3_test_2 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new == 50, european == 1) %>%
+  select(year_new, singleparty, country) %>%
+  mutate(regime_type1950 = singleparty)
+
+data_ussr_regime_change1950_2 <- 
+  full_join(data_ussr2_test_2, data_ussr3_test_2, by = "country") %>%
+  na.omit() %>%
+  mutate(regime_change = ifelse(regime_type1917 != regime_type1950,
+                                1, 0)) %>%
+  select(country, regime_change)
+
+data_ussr_regime_change1950_2.5 <- 
+  full_join(data_ussr2_test_2, data_ussr3_test_2, by = "country") %>%
+  na.omit() %>%
+  mutate(regime_change = ifelse(regime_type1917 != regime_type1950,
+                                1, 0))
+
+# Same Idea but Different Years
+
+data_ussr4_test_2 <- data %>%
+  mutate(year_new = year - 1900) %>%
+  filter(year_new == 91, european == 1) %>%
+  select(year_new, singleparty, country) %>%
+  mutate(regime_type1987 = singleparty)
+
+data_ussr_regime_change1950_3 <- 
+  full_join(data_ussr3_test_2, data_ussr4_test_2, by = "country") %>%
+  na.omit() %>%
+  mutate(regime_change = ifelse(regime_type1950 != regime_type1987,
+                                1, 0)) %>%
+  select(country, regime_change)
 
 ```
 
@@ -202,6 +318,129 @@ ussr2_geom <- ggplot(data = data_ussr2, mapping =
 ussr_geom
 ussr2_geom
 
+
+
+```
+
+\newpage
+
+### Changing the Year: What Happens?
+
+  Given that this analysis is attempting to use the year since a certain event as a predictor of a certain regime type in order to determine to what extent a demonstration effect exists for regime change, 
+```{r ussr2, echo = FALSE}
+
+ussralt_geom <- ggplot(data = data_ussr_alt, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_abline(intercept = .37460 * 100, slope = -0.00312 * 100) +
+  ylim(0, 40) + 
+  xlim(50, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in the mid-20th century",
+       x = "Years since 1900",
+       y = "Single Party Regimes")
+
+ussr3_geom <- ggplot(data = data_ussr3, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_line(aes(y = 30*lm_ussr3_sq_values$ussr3_sq_values), color = "red") +
+  geom_abline(intercept = .642678 * 30, slope = -0.005878 * 30) +
+  ylim(0, 10) + 
+  xlim(50, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in mid-20th century Europe",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe")
+
+ussr3alt_geom <- ggplot(data = data_ussr3_alt, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_line(aes(y = 30*lm_ussr3_alt_sq_values$ussr3_alt_sq_values), color = "red") +
+  geom_abline(intercept = .642678 * 30, slope = -0.005878 * 30) +
+  ylim(0, 20) + 
+  xlim(50, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in mid-20th century Europe and Asia",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe and Asia")
+
+ussr4_geom <- ggplot(data = data_ussr4, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_abline(intercept = .870932 * 30, slope = -0.008172 * 30) +
+  ylim(0, 10) + 
+  xlim(75, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in Mid-Late 20th Century Europe",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe")
+
+ussr5_geom <- ggplot(data = data_ussr5, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_abline(intercept = .365125 * 30, slope = -0.003399 * 30) +
+  ylim(0, 10) + 
+  xlim(87, 91) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in Late 20th century Europe",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe")
+
+ussr5alt_geom <- ggplot(data = data_ussr5_alt, mapping = 
+                      aes(x = year_new, y = singleparty)) +
+  geom_col(aes(y = singleparty)) +
+  geom_abline(intercept = .291841 * 30, slope = -0.002451 * 30) +
+  ylim(0, 20) + 
+  xlim(87, 100) + 
+  theme_bw() +
+  labs(title = "Single Party Regimes in Late 20th Century Europe and Asia",
+       x = "Years since 1900",
+       y = "Single Party Regimes in Europe and Asia")
+
+ussralt_geom
+ussr3_geom
+ussr3alt_geom
+ussr4_geom
+ussr5_geom
+ussr5alt_geom
+
+```
+
+```{r ussr_regime_change, echo = FALSE}
+
+# ussr_regime_change1950_geom <- ggplot(data = data_ussr_regime_change1950,
+     #                                 mapping = aes(x = year_new,
+    #                                            y = regime_change)) +
+  # geom_col(aes(y = regime_change)) +
+  # geom_abline(intercept = .043916 * 30, slope = 0.008803 * 30) +
+  # ylim(0, 100) + 
+  # xlim(50, 75) + 
+  # theme_bw() +
+  # labs(title = "Single Party Regimes in Late 20th Century Europe and Asia",
+       # x = "Years since 1900",
+       # y = "Regime Change in Europe*",
+       # subtitle = "*Regime change number includes years after regime change")
+
+#ussr_regime_change1987_geom <- ggplot(data = data_ussr_regime_change1987,
+     #                                 mapping = aes(x = year_new,
+     #                                           y = regime_change)) +
+  # geom_col(aes(y = regime_change)) +
+ # geom_abline(intercept = .043916 * 30, slope = 0.008803 * 30) +
+ # ylim(0, 20) + 
+  # xlim(87, 100) + 
+  # theme_bw() +
+  # labs(title = "Single Party Regimes in Late 20th Century Europe and Asia",
+    #   x = "Years since 1900",
+     #  y = "Regime Change in Europe*",
+      # subtitle = "*Regime change number includes years after regime change")
+
+knitr::kable(data_ussr_regime_change1950_2, col.names = 
+               c("Country", "Regime Change between 1917 and 1950"
+               ))
+
+knitr::kable(data_ussr_regime_change1950_3, col.names = 
+               c("Country", "Regime Change between 1950 and 1991"
+               ))
 
 
 ```
