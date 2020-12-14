@@ -431,6 +431,10 @@ ussr5alt_geom
 
 ```
 
+\newpage
+
+  Another way to measure the demonstration effect is to look at regime changes that have occurred within a given time frame, and examine how that may be related to a certain event. Unfortunately, the data available to this analysis makes performing this in the form of a linear regression over impracticable but, given that this information could still potentially be valuable, it shall be included as an addendum to the USSR section in the form of two tables. The two tables show a given European country in the left column and whether it changed from and to a single party regime between the set years. It should be noted that these tables measure whether the regime changed to or from being a single party regime in 1950 relative to 1917, and thus does not account for variation in between those years. This means that, if a single party regime were to emerge in 1924 and collapse in 1945, that  would not be accounted for by these tables; these tables also do not include certain European countries, as there was not data for them in the years covered. 
+
 ```{r ussr_regime_change, echo = FALSE}
 
 # ussr_regime_change1950_geom <- ggplot(data = data_ussr_regime_change1950,
